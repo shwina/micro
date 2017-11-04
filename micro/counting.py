@@ -1,35 +1,31 @@
 import numpy as np
+import scipy.ndimage
 
-def external_match(a):
+def external_matches(img):
     masks = [np.array([[0, 0], [0, 1]]),
              np.array([[0, 0], [1, 0]]),
              np.array([[1, 0], [0, 0]]),
              np.array([[0, 1], [0, 0]])]
     
+    matches = 0
     for mask in masks:
-        if np.all(a == mask):
-            return True
-    return False
+        matches += np.sum(
+                scipy.ndimage.binary_hit_or_miss(img, mask, origin1=(-1, -1)))
+    return matches
 
-def internal_match(a):
+def internal_matches(img):
     masks = [np.array([[1, 1], [1, 0]]),
              np.array([[1, 1], [0, 1]]),
              np.array([[0, 1], [1, 1]]),
              np.array([[1, 0], [1, 1]])]
-    
+ 
+    matches = 0
     for mask in masks:
-        if np.all(a == mask):
-            return True
-    return False
-    
+        matches += np.sum(
+                scipy.ndimage.binary_hit_or_miss(img, mask, origin1=(-1, -1)))
+    return matches
+
 def count_objects(img):
-    ny, nx = img.shape
-    E = 0
-    I = 0
-    for i in range(nx-1):
-        for j in range(ny-1):
-            if external_match(img[i:i+2, j:j+2]):
-                E += 1
-            if internal_match(img[i:i+2, j:j+2]):
-                I += 1
+    E = external_matches(img)
+    I = internal_matches(img)
     return (E - I)/4
