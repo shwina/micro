@@ -2,6 +2,8 @@ from setuptools import setup
 from setuptools.extension import Extension
 from Cython.Build import cythonize
 
+import numpy
+
 setup(name='micro',
     version='0.1',
     description='Tools for analysis of microscopic data',
@@ -11,5 +13,5 @@ setup(name='micro',
     packages=['micro'],
     ext_modules = cythonize([Extension("micro.counting",
                             ["micro/counting.pyx"],
-                            include_dirs=["/home/ashwin/software/miniconda/envs/scientific3/lib/python3.5/site-packages/numpy/core/include"])]),
+                            include_dirs=[numpy.get_include()])]),
     zip_safe=False)
