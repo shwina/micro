@@ -2,3 +2,7 @@
 dist/
 *.egg-info/
 *cache
+build/
+*.so
+*.html
+micro/counting.c
