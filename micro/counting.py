@@ -24,6 +24,10 @@ def internal_match(a):
     
 def count_objects(img):
     ny, nx = img.shape
+
+    img[[0, -1], :] = 0
+    img[:, [0, -1]] = 0
+
     E = 0
     I = 0
     for i in range(ny-1):
