@@ -1,36 +1,33 @@
 import numpy as np
+from numba import autojit, prange
 
+@autojit
 def external_match(a):
-    masks = [np.array([[0, 0], [0, 1]]),
-             np.array([[0, 0], [1, 0]]),
-             np.array([[1, 0], [0, 0]]),
-             np.array([[0, 1], [0, 0]])]
-    
-    for mask in masks:
-        if np.all(a == mask):
-            return True
+    if np.sum(a) == 1:
+        return True
     return False
 
+@autojit
 def internal_match(a):
-    masks = [np.array([[1, 1], [1, 0]]),
-             np.array([[1, 1], [0, 1]]),
-             np.array([[0, 1], [1, 1]]),
-             np.array([[1, 0], [1, 1]])]
-    
-    for mask in masks:
-        if np.all(a == mask):
-            return True
+    if np.sum(a) == 3:
+        return True
     return False
-    
+
+@autojit(parallel=True, nopython=True)
 def count_objects(img):
     ny, nx = img.shape
 
-    img[[0, -1], :] = 0
-    img[:, [0, -1]] = 0
+    for j in range(nx):
+        img[0, j] = 0
+        img[-1, j] = 0
+
+    for i in range(ny):
+        img[i, 0] = 0
+        img[i, -1] = 0
 
     E = 0
     I = 0
-    for i in range(ny-1):
+    for i in prange(ny-1):
         for j in range(nx-1):
             if external_match(img[i:i+2, j:j+2]):
                 E += 1
