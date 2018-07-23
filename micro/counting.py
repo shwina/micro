@@ -1,27 +1,15 @@
 import numpy as np
 
 def external_match(a):
-    masks = [np.array([[0, 0], [0, 1]]),
-             np.array([[0, 0], [1, 0]]),
-             np.array([[1, 0], [0, 0]]),
-             np.array([[0, 1], [0, 0]])]
-    
-    for mask in masks:
-        if np.all(a == mask):
+    if np.sum(a) == 1:
             return True
     return False
 
 def internal_match(a):
-    masks = [np.array([[1, 1], [1, 0]]),
-             np.array([[1, 1], [0, 1]]),
-             np.array([[0, 1], [1, 1]]),
-             np.array([[1, 0], [1, 1]])]
-    
-    for mask in masks:
-        if np.all(a == mask):
+    if np.sum(a) == 3:
             return True
     return False
-    
+
 def count_objects(img):
     ny, nx = img.shape
 
